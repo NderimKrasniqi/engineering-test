@@ -43,6 +43,17 @@ The agent must not make up scalability numbers, performance benchmarks, reviews,
 
 After implementation and `engine.py verify`:
 
+**Review freshness:** `quality_gate.py init` pins the current verified workspace, task,
+check configuration and policy in the draft **before** a reviewer begins. For high-risk
+tasks, send that snapshot to the native independent reviewer; require the reviewer to
+report the same snapshot ID and independent session ID. If the reviewer requests code
+changes (even small fixes), make them, rerun `engine.py verify`, create a NEW review
+request and ask the independent reviewer to review the final change (a focused patch
+re-review is enough). Never update an old review's run ID or hashes to make it pass.
+`quality_gate.py submit` will not silently rebind old review evidence to a newer run.
+The engine cannot authenticate a native agent's identity or prove what it actually read;
+these IDs are evidence-linked attestations, not cryptographic proof.
+
 ```bash
 python3 .agent/core/quality_gate.py init
 # Edit .agent/runs/<task>/quality-draft.json with real review findings and evidence.

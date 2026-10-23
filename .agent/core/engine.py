@@ -203,6 +203,23 @@ def maintenance_report(root):
             'learning_cases':len(all_cases),'at':datetime.now(timezone.utc).isoformat()}
 
 
+def persist_maintenance_report(root, report):
+    """Write only when the maintenance findings change, not just the clock.
+
+    The persisted `at` timestamp denotes when these findings were first
+    recorded; `maintenance` still rechecks the current repository every time.
+    """
+    target=root/'.agent/runs/maintenance/last.json'
+    if target.is_file():
+        previous=read(target)
+        if (isinstance(previous,dict)
+                and {k:v for k,v in previous.items() if k!='at'}
+                    == {k:v for k,v in report.items() if k!='at'}):
+            return False
+    write(target,report)
+    return True
+
+
 def maintenance(root,_):
     refresh_project_map(root)
     # Safe self-repair: restore missing generated adapter files only. Never replace
@@ -219,8 +236,7 @@ def maintenance(root,_):
                 refresh_project_map(root)
                 print('SELF-MAINTENANCE restored missing agent files:',', '.join(str(p) for p in missing))
     report=maintenance_report(root)
-    target=root/'.agent/runs/maintenance/last.json'
-    write(target,report)
+    persist_maintenance_report(root,report)
     print('SELF-MAINTENANCE:', 'PASS' if report['healthy'] else 'NEEDS REPAIR')
     for issue in report['issues']: print('  ',issue)
     print('Learning cases:',report['learning_cases'])
@@ -478,7 +494,7 @@ def finish(root,_):
     path,data=gate(root)
     state=maintenance_report(root)
     if not state['healthy']:raise Problem('Self-maintenance requires repair: '+'; '.join(state['issues']))
-    write(root/'.agent/runs/maintenance/last.json',state)
+    persist_maintenance_report(root,state)
     doc,rows=tasks(root); matches=[r for r in rows if r['id']==data['task_id']]
     if len(matches)!=1 or matches[0] not in ready(rows):raise Problem('Task not ready; cannot update task registry')
     from learning_engine import unresolved_for_task

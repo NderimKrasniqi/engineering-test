@@ -40,7 +40,7 @@ quality, verification, task continuation and maintenance. Missing files are not 
 
 ## Discovered repository structure
 
-Indexed files: **59**. All indexed paths are recorded in `.agent/project-index.json`.
+Indexed files: **60**. All indexed paths are recorded in `.agent/project-index.json`.
 
 These folders and counts come from the actual filesystem; they are not architectural claims.
 
@@ -49,8 +49,8 @@ These folders and counts come from the actual filesystem; they are not architect
 | `.agent/core` | 19 |
 | `(root)` | 8 |
 | `docs` | 6 |
+| `e2e` | 6 |
 | `src` | 6 |
-| `e2e` | 5 |
 | `.claude/agents` | 4 |
 | `.codex/agents` | 4 |
 | `.claude` | 2 |

@@ -1,7 +1,7 @@
 {
   "generated_by": "engineering-stack/project-intelligence/v1",
   "schema_version": 1,
-  "file_count": 59,
+  "file_count": 60,
   "files": [
     {
       "path": ".agent/core/AUTONOMY.md",
@@ -36,8 +36,8 @@
     {
       "path": ".agent/core/QUALITY_STANDARD.md",
       "kind": "engineering-stack",
-      "size": 5679,
-      "sha256": "54f884b53120bfb323897e62ce23122912f6406d42c3d76157328fa13dbfc8ea"
+      "size": 6527,
+      "sha256": "c2c4851052f0022835d876d969bb088fc6ed503fc9e0bb46150154f633931b39"
     },
     {
       "path": ".agent/core/TESTING_STYLE.md",
@@ -66,14 +66,14 @@
     {
       "path": ".agent/core/delegation.py",
       "kind": "engineering-stack",
-      "size": 9663,
-      "sha256": "eb32bd9d763da3bd501a0b7fc9044a498d4e496b98dde41c8abe3c34dd7029cc"
+      "size": 9915,
+      "sha256": "3d228422a51d44637ed8179af3d88dbad944cd3f5952c34425fad040e4651d09"
     },
     {
       "path": ".agent/core/engine.py",
       "kind": "engineering-stack",
-      "size": 29889,
-      "sha256": "adb3b455897d67fc8283a14194c6eb4cb5ebe7d13ac8ce9263f3aa7d0beca215"
+      "size": 30468,
+      "sha256": "776ad6b25a8587c5a1e4c1dc4b5a33bbf0a2006c6647d4931382e61d02143af2"
     },
     {
       "path": ".agent/core/instruction_linker.py",
@@ -108,8 +108,8 @@
     {
       "path": ".agent/core/quality_gate.py",
       "kind": "engineering-stack",
-      "size": 11395,
-      "sha256": "10e56d4412204e95f36c57b98f2983aa1aef057c60ba2d08d5fb139cc0ce1800"
+      "size": 12770,
+      "sha256": "0fd4e22235219bc8aac69c7a89a52f3ec4d810126b73a4e348b6a747e720ba07"
     },
     {
       "path": ".agent/core/stop_hook.py",
@@ -144,8 +144,8 @@
     {
       "path": ".claude/agents/engineering-reviewer.md",
       "kind": "documentation",
-      "size": 1022,
-      "sha256": "d5cc088173ca39694c024902f674e4c79353abffa28a43bb1659b9469eba1400"
+      "size": 1274,
+      "sha256": "04b98db61be5350b362b62cd3b85a5051eff61f3d85202b1807502814b269e7e"
     },
     {
       "path": ".claude/settings.delegation.example.json",
@@ -180,8 +180,8 @@
     {
       "path": ".codex/agents/engineering-reviewer.toml",
       "kind": "other",
-      "size": 1049,
-      "sha256": "36636e85188ae954debffc7dbe0b9b9c35b3610722e463d67903c2a553d62753"
+      "size": 1301,
+      "sha256": "74e7a7f48d3113f9d6160c9f04012c3967eeb04c917a960686ebda99a1fa875d"
     },
     {
       "path": ".codex/config.engineering.example.toml",
@@ -286,6 +286,12 @@
       "sha256": "65da0ecc19e55458c4fdc99330a077364d15fe38f51b34875219b12a301ba731"
     },
     {
+      "path": "e2e/startup.spec.ts",
+      "kind": "tests",
+      "size": 846,
+      "sha256": "e5c212ab60f037fe54384e365938d852820fc3f3dc89094c51f6e5846cb5fa3a"
+    },
+    {
       "path": "e2e/support/booking.ts",
       "kind": "tests",
       "size": 1674,
@@ -336,8 +342,8 @@
     {
       "path": "src/server.ts",
       "kind": "source",
-      "size": 321,
-      "sha256": "c8ff33eb407684a02870e55dd354a6061195c8c89ef8ee76908fefa0cc941a09"
+      "size": 456,
+      "sha256": "6411619473a75ec25dba779198876075394a877c9b1c9c0243f87af2700255f3"
     },
     {
       "path": "src/views.ts",
@@ -365,7 +371,7 @@
     "other": 10,
     "product-workflow": 9,
     "source": 7,
-    "tests": 6
+    "tests": 7
   },
   "directories": {
     "(root)": 8,
@@ -377,7 +383,7 @@
     ".codex/agents": 4,
     ".workflow": 1,
     "docs": 6,
-    "e2e": 5,
+    "e2e": 6,
     "e2e/support": 1,
     "src": 6,
     "tools": 1

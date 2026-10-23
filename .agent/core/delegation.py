@@ -54,7 +54,7 @@ def body(role):
     specifics={
       'explorer':'Do not modify any files. Trace only the relevant code paths and return specific locations and uncertainties.',
       'implementer':'Implement only the assigned scope. If worktree-isolated, check the worktree base commit and dependency state before editing; tell the lead if required changes are absent. Run focused checks; do not approve your own work.',
-      'reviewer':'Do not edit files. Review the integrated diff and real behavior, not the implementer summary. Prioritize genuine correctness, security, readability, complexity and scalability risks; avoid style-only nitpicks and unnecessary tests.',
+      'reviewer':'Do not edit files. Review the integrated diff and real behavior, not the implementer summary. Check the review request snapshot ID against the code state before reviewing, and include that ID plus your session ID in the report. If the main agent makes changes after your review, perform a focused new review of the final state before completion. Prioritize genuine correctness, security, readability, complexity and scalability risks; avoid style-only nitpicks and unnecessary tests.',
       'investigator':'Do not modify files. Investigate root causes and high-risk invariants with concrete evidence. Propose the smallest enforceable correction and return risks and uncertainties.'
     }
     return specifics[role]+'\n\n'+common

@@ -42,11 +42,21 @@ def review_path(root, task_id):
     return root / '.agent/runs' / task_id / 'quality-review.json'
 
 
-def quality_template(task, run_id):
+def quality_template(task, run, checks_config, policy):
+    """Bind a review request to the verified state BEFORE a reviewer starts.
+
+    These fields are fixed when `init` runs. `submit` must never rebase an
+    earlier review onto a newer verification after the code has changed.
+    """
+    from engine import encode, sha
     return {
         'schema_version': 1,
         'task_id': task['task_id'],
-        'verification_run_id': run_id,
+        'verification_run_id': run['run_id'],
+        'workspace_sha256': run['workspace_sha256'],
+        'task_sha256': sha(encode(task)),
+        'checks_sha256': sha(encode(checks_config)),
+        'policy_sha256': sha(encode(policy)),
         'review_method': 'independent-agent-review' if task['risk']=='high' else 'agent-self-review',
         'reviewer_role': None,
         'reviewer_session_id': None,
@@ -168,8 +178,13 @@ def main(argv=None):
         task=contract(root);config,_=checks(root);quality_policy(root)
         run_path,run=verification_record(root,task)
         if args.action=='init':
+            if snapshot(root)[0] != run['workspace_sha256']:
+                raise QualityProblem('Workspace changed after verification; rerun verify before requesting review')
             draft=review_path(root,task['task_id']).with_name('quality-draft.json')
-            write(draft,quality_template(task,run['run_id']))
+            write(draft,quality_template(task,run,config,quality_policy(root)))
+            print('Review request pinned to verified workspace:',run['workspace_sha256'])
+            print('For high risk, send this snapshot ID to an independent reviewer BEFORE they inspect the code.')
+            print('If reviewed code changes, rerun verify, init and independent review; do not reuse earlier findings.')
             print('Fill the review for actual code changes, then submit:',draft)
         elif args.action=='submit':
             try:
@@ -181,10 +196,12 @@ def main(argv=None):
             data=read(draft_path)
             if not isinstance(data,dict) or data.get('task_id')!=task['task_id'] or data.get('verification_run_id')!=run['run_id']:
                 raise QualityProblem('Draft must reference the latest task and verification run')
-            data['workspace_sha256']=run['workspace_sha256']
-            data['task_sha256']=sha(encode(task))
-            data['checks_sha256']=sha(encode(config))
-            data['policy_sha256']=sha(encode(quality_policy(root)))
+            expected = quality_template(task,run,config,quality_policy(root))
+            pinned = ('workspace_sha256','task_sha256','checks_sha256','policy_sha256')
+            if any(data.get(key)!=expected[key] for key in pinned):
+                raise QualityProblem('Review was prepared for a different workspace, task or policy. Reverify, reinitialize and review the final code again; never rebind old review evidence')
+            if snapshot(root)[0] != run['workspace_sha256']:
+                raise QualityProblem('Workspace changed since review request; rerun verification and review')
             target=review_path(root,task['task_id'])
             # Validate candidate before writing it as the accepted review.
             temporary=target.with_name('quality-candidate.json')
