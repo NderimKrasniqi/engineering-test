@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "required_categories": {
+    "low": [
+      "e2e"
+    ],
+    "medium": [
+      "e2e"
+    ],
+    "high": [
+      "e2e",
+      "security"
+    ]
+  }
+}

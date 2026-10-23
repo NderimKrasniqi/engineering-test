@@ -1,0 +1,1 @@
+{"schema_version":1,"task_id":"task-01","risk":"medium","claims":[{"id":"acceptance-1","description":"User-visible acceptance criterion","check_ids":["project-tests"]}]}

@@ -1,0 +1,328 @@
+{
+  "generated_by": "engineering-stack/project-intelligence/v1",
+  "schema_version": 1,
+  "file_count": 32,
+  "files": [
+    {
+      "path": ".agent/core/AUTONOMY.md",
+      "kind": "engineering-stack",
+      "size": 3363,
+      "sha256": "5299cbfb150c986a696c749c2760996c9e5e1414b70542fc9da871666aa58b3f"
+    },
+    {
+      "path": ".agent/core/CONTRACT.md",
+      "kind": "engineering-stack",
+      "size": 4673,
+      "sha256": "a5758a6b9c314672e8e9133fd69f6396967a96770dc1b748f4a754bea2695f46"
+    },
+    {
+      "path": ".agent/core/DELEGATION.md",
+      "kind": "engineering-stack",
+      "size": 5527,
+      "sha256": "3e2fdaf62a9e6e09379f4f1f12aa56d3917064f7982167a920a7d8e2c93b58b7"
+    },
+    {
+      "path": ".agent/core/PRODUCT_HANDOFF.md",
+      "kind": "engineering-stack",
+      "size": 904,
+      "sha256": "591ce57c5d975b66f8287d1dc1d51968cd5bebaf9a8b5131b430ad26b8bcb34f"
+    },
+    {
+      "path": ".agent/core/PROJECT_INTELLIGENCE.md",
+      "kind": "engineering-stack",
+      "size": 3073,
+      "sha256": "4c34eaf8b2e69ded8198faa6abe91658b118eda72213a6b1bc7e8395713a2e6f"
+    },
+    {
+      "path": ".agent/core/QUALITY_STANDARD.md",
+      "kind": "engineering-stack",
+      "size": 5679,
+      "sha256": "54f884b53120bfb323897e62ce23122912f6406d42c3d76157328fa13dbfc8ea"
+    },
+    {
+      "path": ".agent/core/TESTING_STYLE.md",
+      "kind": "engineering-stack",
+      "size": 1787,
+      "sha256": "971ba115ffaa7aa36d85642901cdc0ded21ba7c412c8577e4cec270a9951ba00"
+    },
+    {
+      "path": ".agent/core/active.example.json",
+      "kind": "engineering-stack",
+      "size": 170,
+      "sha256": "29425c5b347a525304f74847238af42d811c0267e8a57480c452ccfacd285588"
+    },
+    {
+      "path": ".agent/core/checks.json",
+      "kind": "engineering-stack",
+      "size": 42,
+      "sha256": "6b3235aa33b8298bfe5157cfdd9d62a524105c2ee0647b3933c9c364d6dfb0be"
+    },
+    {
+      "path": ".agent/core/delegation.json",
+      "kind": "engineering-stack",
+      "size": 1412,
+      "sha256": "1b5296eab803a45491db2dcb04855d8f57ebbda4a0a4c8a30a812319e9f21f98"
+    },
+    {
+      "path": ".agent/core/delegation.py",
+      "kind": "engineering-stack",
+      "size": 9663,
+      "sha256": "eb32bd9d763da3bd501a0b7fc9044a498d4e496b98dde41c8abe3c34dd7029cc"
+    },
+    {
+      "path": ".agent/core/engine.py",
+      "kind": "engineering-stack",
+      "size": 29889,
+      "sha256": "adb3b455897d67fc8283a14194c6eb4cb5ebe7d13ac8ce9263f3aa7d0beca215"
+    },
+    {
+      "path": ".agent/core/instruction_linker.py",
+      "kind": "engineering-stack",
+      "size": 3882,
+      "sha256": "0309892b150ac66b3b34757b05eb70fe02230f429abfb52b5975ea9e260053b9"
+    },
+    {
+      "path": ".agent/core/learning_engine.py",
+      "kind": "engineering-stack",
+      "size": 19927,
+      "sha256": "3b6186e81c5a30e9d446a7284faf614773865c7679bc63a19516a04a3928e1bc"
+    },
+    {
+      "path": ".agent/core/operation.json",
+      "kind": "engineering-stack",
+      "size": 91,
+      "sha256": "ce5df9f515e4b097a63fad0f1dd13b28f8da897dc9618fd858a31aa0a7044022"
+    },
+    {
+      "path": ".agent/core/project_intelligence.py",
+      "kind": "engineering-stack",
+      "size": 12508,
+      "sha256": "da49d9784a71bd4ab55015b5faf711f1c4ffc0ccf8155374f20f1a8ab1cbbff3"
+    },
+    {
+      "path": ".agent/core/quality.json",
+      "kind": "engineering-stack",
+      "size": 175,
+      "sha256": "c0a3800c0d2785d436040328da73d73e9364f54e74cb56b9d49dc6696727bbc0"
+    },
+    {
+      "path": ".agent/core/quality_gate.py",
+      "kind": "engineering-stack",
+      "size": 11395,
+      "sha256": "10e56d4412204e95f36c57b98f2983aa1aef057c60ba2d08d5fb139cc0ce1800"
+    },
+    {
+      "path": ".agent/core/stop_hook.py",
+      "kind": "engineering-stack",
+      "size": 1034,
+      "sha256": "b48fe2a55bfc816b74e4b38f2f1fcc2ffd8f6d04e7fe1902d40939d9e182689d"
+    },
+    {
+      "path": ".agent/learning/guide/WORKFLOW.md",
+      "kind": "engineering-stack",
+      "size": 4670,
+      "sha256": "2f30b4b05e50d3233f940da4b0745d104de0166216b5c0a162e42df94cb38dff"
+    },
+    {
+      "path": ".claude/agents/engineering-explorer.md",
+      "kind": "documentation",
+      "size": 898,
+      "sha256": "c51edd13d9ab1a08f8d8dc97be7adbdc9891ef07f3703b4a589eb88452d02ec9"
+    },
+    {
+      "path": ".claude/agents/engineering-implementer.md",
+      "kind": "documentation",
+      "size": 1008,
+      "sha256": "653e4b949ef8d26db6fe6c23abc7db9e39601428d1f8bcbee5d7e074d3422577"
+    },
+    {
+      "path": ".claude/agents/engineering-investigator.md",
+      "kind": "documentation",
+      "size": 962,
+      "sha256": "c97e1e7480a945b5849fd6b370f6fefecfbfcca2f40931abe480cd1383741d8d"
+    },
+    {
+      "path": ".claude/agents/engineering-reviewer.md",
+      "kind": "documentation",
+      "size": 1022,
+      "sha256": "d5cc088173ca39694c024902f674e4c79353abffa28a43bb1659b9469eba1400"
+    },
+    {
+      "path": ".claude/settings.delegation.example.json",
+      "kind": "other",
+      "size": 116,
+      "sha256": "a9c02d44d8e151b4c00b7fe9d90f674983fdc0cb82fd6a51a3056b4dadb351e7"
+    },
+    {
+      "path": ".codex/agents/engineering-explorer.toml",
+      "kind": "other",
+      "size": 923,
+      "sha256": "83adf2ab4d0ca5ed68afa44f22c4992e46b8d03948c630695c100d2f7b933dd7"
+    },
+    {
+      "path": ".codex/agents/engineering-implementer.toml",
+      "kind": "other",
+      "size": 1045,
+      "sha256": "50315c6127a805085e16fd09fccdc966e214808cec0a773cae7a8b444e71627f"
+    },
+    {
+      "path": ".codex/agents/engineering-investigator.toml",
+      "kind": "other",
+      "size": 991,
+      "sha256": "b2aad904fb12f892a2da234c6911f51cda37c9361f3b7974d45571324bd98161"
+    },
+    {
+      "path": ".codex/agents/engineering-reviewer.toml",
+      "kind": "other",
+      "size": 1049,
+      "sha256": "36636e85188ae954debffc7dbe0b9b9c35b3610722e463d67903c2a553d62753"
+    },
+    {
+      "path": ".codex/config.engineering.example.toml",
+      "kind": "other",
+      "size": 147,
+      "sha256": "0a12752cf7f6dd768df84a326f2fce93a160a2b1e5b7aa0d7971903064cb9192"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "product-workflow",
+      "size": 1181,
+      "sha256": "977e0c682ac2b4ad7a4ab0c023273b1bcb634ca4e4c809c183fd160f55e6bdd0"
+    },
+    {
+      "path": "CLAUDE.md",
+      "kind": "documentation",
+      "size": 80,
+      "sha256": "f21b14dbe451a16e6c127cddbd9be36d992a88e8e7691e32199ef74a95592375"
+    }
+  ],
+  "categories": {
+    "documentation": 5,
+    "engineering-stack": 20,
+    "other": 6,
+    "product-workflow": 1
+  },
+  "directories": {
+    "(root)": 2,
+    ".agent/core": 19,
+    ".agent/learning/guide": 1,
+    ".claude": 1,
+    ".claude/agents": 4,
+    ".codex": 1,
+    ".codex/agents": 4
+  },
+  "product_workflow": [
+    {
+      "path": "docs/product.md",
+      "producer": "product-discovery",
+      "purpose": "Product goals and requirements",
+      "present": false
+    },
+    {
+      "path": "docs/domain.md",
+      "producer": "domain-modeling",
+      "purpose": "Domain concepts and business rules",
+      "present": false
+    },
+    {
+      "path": "docs/specs.md",
+      "producer": "journey-specification",
+      "purpose": "User journeys and expected behavior",
+      "present": false
+    },
+    {
+      "path": "docs/architecture.md",
+      "producer": "solution-design",
+      "purpose": "Approved solution and architecture decisions",
+      "present": false
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "producer": "implementation-plan",
+      "purpose": "Task descriptions and acceptance criteria",
+      "present": false
+    },
+    {
+      "path": ".workflow/tasks.json",
+      "producer": "implementation-plan",
+      "purpose": "Task references and dependencies",
+      "present": false
+    },
+    {
+      "path": "AGENTS.md",
+      "producer": "product-discovery",
+      "purpose": "Shared project instructions and documentation entry points",
+      "present": true
+    },
+    {
+      "path": "docs/engineering-principles.md",
+      "producer": "product-discovery",
+      "purpose": "Project-specific engineering principles",
+      "present": false
+    },
+    {
+      "path": "tools/validate-workflow.py",
+      "producer": "product-discovery",
+      "purpose": "Product-workflow document validation",
+      "present": false
+    }
+  ],
+  "engineering_stack": [
+    {
+      "path": ".agent/core/CONTRACT.md",
+      "purpose": "Engineering ownership contract",
+      "present": true
+    },
+    {
+      "path": ".agent/core/AUTONOMY.md",
+      "purpose": "Continuation and clarification rules",
+      "present": true
+    },
+    {
+      "path": ".agent/core/QUALITY_STANDARD.md",
+      "purpose": "Engineering quality standard",
+      "present": true
+    },
+    {
+      "path": ".agent/core/TESTING_STYLE.md",
+      "purpose": "Lean user-flow test policy",
+      "present": true
+    },
+    {
+      "path": ".agent/core/checks.json",
+      "purpose": "Executable project verification commands",
+      "present": true
+    },
+    {
+      "path": ".agent/core/quality.json",
+      "purpose": "Project quality gate policy",
+      "present": true
+    },
+    {
+      "path": ".agent/core/operation.json",
+      "purpose": "User-selected continuation mode",
+      "present": true
+    },
+    {
+      "path": ".agent/learning/guide/WORKFLOW.md",
+      "purpose": "Learning process",
+      "present": true
+    },
+    {
+      "path": ".agent/decisions/clarifications.jsonl",
+      "purpose": "Answered product clarifications",
+      "present": false
+    },
+    {
+      "path": ".claude/skills/engineering-mode/SKILL.md",
+      "purpose": "Claude Code engineering router",
+      "present": false
+    },
+    {
+      "path": ".agents/skills/engineering-mode/SKILL.md",
+      "purpose": "Codex engineering router",
+      "present": false
+    }
+  ],
+  "possible_entrypoints": []
+}

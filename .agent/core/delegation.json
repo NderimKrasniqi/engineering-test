@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "max_concurrent_subagents": 2,
+  "max_spawn_depth": 1,
+  "policy": {
+    "delegate_small_tasks": false,
+    "require_independent_review_for_high_risk": true,
+    "isolate_implementer": true,
+    "main_owns_task_completion": true
+  },
+  "main": {
+    "claude": {"model": "opus", "effort": "medium"},
+    "codex": {"model": "gpt-6.1-sol", "effort": "medium"}
+  },
+  "roles": {
+    "explorer": {
+      "description": "Read-only exploration of relevant files, call paths and dependencies before a change.",
+      "claude": {"model": "haiku", "effort": "medium"},
+      "codex": {"model": "gpt-6-luna", "effort": "high"}
+    },
+    "implementer": {
+      "description": "Implement one bounded engineering task; return focused changes and verification evidence.",
+      "claude": {"model": "sonnet", "effort": "medium"},
+      "codex": {"model": "gpt-6.1-sol", "effort": "medium"}
+    },
+    "reviewer": {
+      "description": "Independently inspect integrated changes for correctness, security and maintainability.",
+      "claude": {"model": "sonnet", "effort": "high"},
+      "codex": {"model": "gpt-6.1-sol", "effort": "high"}
+    },
+    "investigator": {
+      "description": "Read-only deep investigation of complex security, concurrency or repeated failures.",
+      "claude": {"model": "opus", "effort": "high"},
+      "codex": {"model": "gpt-6.1-sol", "effort": "high"}
+    }
+  }
+}
