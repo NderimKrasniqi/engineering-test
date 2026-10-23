@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-01",
+  "verification_run_id": "20261023T152708Z-1792769228385254000-2733805f",
+  "review_method": "agent-self-review",
+  "reviewer_role": null,
+  "reviewer_session_id": null,
+  "implementer_session_id": null,
+  "dimensions": {
+    "readability": {
+      "status": "pass",
+      "rationale": "Small files with one job each: db schema, html escaping, page shell, app factory, server entry.",
+      "evidence": [
+        "file:src/db.ts",
+        "file:src/html.ts",
+        "file:src/app.ts"
+      ]
+    },
+    "maintainability": {
+      "status": "pass",
+      "rationale": "createApp(db) takes the database as input, so tests and the server share one composition path; no speculative layers.",
+      "evidence": [
+        "file:src/app.ts",
+        "file:src/server.ts",
+        "check:typecheck"
+      ]
+    },
+    "security": {
+      "status": "pass",
+      "rationale": "Server binds to 127.0.0.1 only; html tagged template escapes every interpolated value by default; x-powered-by disabled.",
+      "evidence": [
+        "file:src/server.ts",
+        "file:src/html.ts"
+      ]
+    },
+    "reliability": {
+      "status": "pass",
+      "rationale": "Schema uses CHECK constraints for status and date order, foreign keys on, WAL and busy_timeout for concurrent access; schema creation is idempotent and verified by the smoke test.",
+      "evidence": [
+        "file:src/db.ts",
+        "check:e2e"
+      ]
+    },
+    "scalability": {
+      "status": "pass",
+      "rationale": "Index on reservation(equipment_id, status, start_date, end_date) supports the overlap lookup; local single-file SQLite fits the local single-machine scope.",
+      "evidence": [
+        "file:src/db.ts"
+      ]
+    },
+    "compatibility": {
+      "status": "pass",
+      "rationale": "Requires Node 24 type stripping; engines field declares it; tsconfig enforces erasable syntax so Node can run the sources directly.",
+      "evidence": [
+        "file:package.json",
+        "file:tsconfig.json",
+        "check:typecheck"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "severity": "low",
+      "status": "resolved",
+      "summary": "views.ts referenced a non-existent SafeHtmlStyle class.",
+      "resolution": "Replaced with SafeHtml; typecheck passes."
+    }
+  ],
+  "tradeoffs": "Server-rendered pages without client JavaScript (ADR-02). The E2E database is a fresh temp file per run.",
+  "workspace_sha256": "5198fb5a6d0f655a406e5968c9d35519e63dcfcfdcdfe1010d02eb182c4e92b1",
+  "task_sha256": "e0ae8a23bb63f30241ed92c064f8013e73e6ada7c1e26399873ae06e6a94b536",
+  "checks_sha256": "5334af710e9c92d47260d797893024d460cd50d71ecb19d0e1d758e229a2e185",
+  "policy_sha256": "ef20a59ba60e8d7893127a1d7262edcec6f7618d3a4522755d3ef829ceb7d1b5"
+}

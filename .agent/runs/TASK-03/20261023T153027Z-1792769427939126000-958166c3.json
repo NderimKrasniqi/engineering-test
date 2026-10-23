@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-03",
+  "run_id": "20261023T153027Z-1792769427939126000-958166c3",
+  "passed": true,
+  "workspace_stable": true,
+  "workspace_sha256": "5430528c48c5c1c47ab60f09ff3e33b9b67dd98a4026038bf0fa6e604b8c6f1f",
+  "task_sha256": "ee8f3656eac5d4eb60f57e0423acefb03b587b846c8178fc67c8b6d5875d7510",
+  "checks_sha256": "8b9335573b4a58b803b58031157dd0b2236692f64f0fee122e6f955a6056d9b3",
+  "checks": [
+    {
+      "id": "typecheck",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "duration_seconds": 0.448
+    },
+    {
+      "id": "e2e",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "d40aa7d1ff77c96453a23b29405316fe75aa169f148ff286282db0c513e8ea4c",
+      "duration_seconds": 3.751
+    },
+    {
+      "id": "dependency-audit",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "f089aac094ca3a2cae17f10a5b300e1112c032907732ba46c23860b4c90252f3",
+      "duration_seconds": 1.054
+    },
+    {
+      "id": "overlap-concurrency",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "29aff6f075b6965a097e530647d091045fbb9ccb8a8f0e75a3bcc7c59130206e",
+      "duration_seconds": 2.245
+    }
+  ]
+}

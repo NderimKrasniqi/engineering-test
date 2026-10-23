@@ -12,15 +12,15 @@ quality, verification, task continuation and maintenance. Missing files are not 
 
 | Status | File | Producing skill | Purpose |
 | --- | --- | --- | --- |
-| Not present | `docs/product.md` | `product-discovery` | Product goals and requirements |
-| Not present | `docs/domain.md` | `domain-modeling` | Domain concepts and business rules |
-| Not present | `docs/specs.md` | `journey-specification` | User journeys and expected behavior |
-| Not present | `docs/architecture.md` | `solution-design` | Approved solution and architecture decisions |
-| Not present | `docs/implementation-plan.md` | `implementation-plan` | Task descriptions and acceptance criteria |
-| Not present | `.workflow/tasks.json` | `implementation-plan` | Task references and dependencies |
+| Present | `docs/product.md` | `product-discovery` | Product goals and requirements |
+| Present | `docs/domain.md` | `domain-modeling` | Domain concepts and business rules |
+| Present | `docs/specs.md` | `journey-specification` | User journeys and expected behavior |
+| Present | `docs/architecture.md` | `solution-design` | Approved solution and architecture decisions |
+| Present | `docs/implementation-plan.md` | `implementation-plan` | Task descriptions and acceptance criteria |
+| Present | `.workflow/tasks.json` | `implementation-plan` | Task references and dependencies |
 | Present | `AGENTS.md` | `product-discovery` | Shared project instructions and documentation entry points |
-| Not present | `docs/engineering-principles.md` | `product-discovery` | Project-specific engineering principles |
-| Not present | `tools/validate-workflow.py` | `product-discovery` | Product-workflow document validation |
+| Present | `docs/engineering-principles.md` | `product-discovery` | Project-specific engineering principles |
+| Present | `tools/validate-workflow.py` | `product-discovery` | Product-workflow document validation |
 
 ### Engineering Stack
 
@@ -40,23 +40,29 @@ quality, verification, task continuation and maintenance. Missing files are not 
 
 ## Discovered repository structure
 
-Indexed files: **32**. All indexed paths are recorded in `.agent/project-index.json`.
+Indexed files: **59**. All indexed paths are recorded in `.agent/project-index.json`.
 
 These folders and counts come from the actual filesystem; they are not architectural claims.
 
 | Directory | Indexed files |
 | --- | ---: |
 | `.agent/core` | 19 |
+| `(root)` | 8 |
+| `docs` | 6 |
+| `src` | 6 |
+| `e2e` | 5 |
 | `.claude/agents` | 4 |
 | `.codex/agents` | 4 |
-| `(root)` | 2 |
+| `.claude` | 2 |
 | `.agent/learning/guide` | 1 |
-| `.claude` | 1 |
 | `.codex` | 1 |
+| `.workflow` | 1 |
+| `e2e/support` | 1 |
+| `tools` | 1 |
 
 ## Possible application entry points
 
-None identified by filename. Inspect the repository when needed.
+- `src/server.ts` (name-based candidate; inspect before relying on it)
 
 ## How to use this map
 

@@ -1,7 +1,7 @@
 {
   "generated_by": "engineering-stack/project-intelligence/v1",
   "schema_version": 1,
-  "file_count": 32,
+  "file_count": 59,
   "files": [
     {
       "path": ".agent/core/AUTONOMY.md",
@@ -54,8 +54,8 @@
     {
       "path": ".agent/core/checks.json",
       "kind": "engineering-stack",
-      "size": 42,
-      "sha256": "6b3235aa33b8298bfe5157cfdd9d62a524105c2ee0647b3933c9c364d6dfb0be"
+      "size": 906,
+      "sha256": "6fdbdd5603ed41666618d79a2015dcdbca3723fd6025930ece11e97519de1f7e"
     },
     {
       "path": ".agent/core/delegation.json",
@@ -90,8 +90,8 @@
     {
       "path": ".agent/core/operation.json",
       "kind": "engineering-stack",
-      "size": 91,
-      "sha256": "ce5df9f515e4b097a63fad0f1dd13b28f8da897dc9618fd858a31aa0a7044022"
+      "size": 90,
+      "sha256": "06f4324ff239fa0f4eda4d0afdc90c13538fee9f2052d52d5d831e40a1b072f0"
     },
     {
       "path": ".agent/core/project_intelligence.py",
@@ -154,6 +154,12 @@
       "sha256": "a9c02d44d8e151b4c00b7fe9d90f674983fdc0cb82fd6a51a3056b4dadb351e7"
     },
     {
+      "path": ".claude/settings.json",
+      "kind": "other",
+      "size": 73,
+      "sha256": "047516a78ee610a5074413ab4d12c7dd3b3a6f80114a25c5c675b94273af673d"
+    },
+    {
       "path": ".codex/agents/engineering-explorer.toml",
       "kind": "other",
       "size": 923,
@@ -184,69 +190,234 @@
       "sha256": "0a12752cf7f6dd768df84a326f2fce93a160a2b1e5b7aa0d7971903064cb9192"
     },
     {
+      "path": ".gitignore",
+      "kind": "other",
+      "size": 66,
+      "sha256": "b33b5ac0f3332ed766da0184f41d7948e5670e19d4e640909368d4a964def98a"
+    },
+    {
+      "path": ".workflow/tasks.json",
+      "kind": "product-workflow",
+      "size": 518,
+      "sha256": "755a679f7612547ee90e04f83684c9420d078c46cf5fc37c296c80e388309710"
+    },
+    {
       "path": "AGENTS.md",
       "kind": "product-workflow",
-      "size": 1181,
-      "sha256": "977e0c682ac2b4ad7a4ab0c023273b1bcb634ca4e4c809c183fd160f55e6bdd0"
+      "size": 4832,
+      "sha256": "819345fb7feee8d6b2eeb44fad21f3b10685df9b2e66cdbf5180fdae64b4069e"
     },
     {
       "path": "CLAUDE.md",
       "kind": "documentation",
       "size": 80,
       "sha256": "f21b14dbe451a16e6c127cddbd9be36d992a88e8e7691e32199ef74a95592375"
+    },
+    {
+      "path": "README.md",
+      "kind": "documentation",
+      "size": 713,
+      "sha256": "363033198d3711768ad4d564cf48e749fc2309c94d3c5d3acb55026d8ba9ceb8"
+    },
+    {
+      "path": "docs/architecture.md",
+      "kind": "product-workflow",
+      "size": 3062,
+      "sha256": "2eff67f418b94a2ee4780b531a3034fbfb8689ecf3d8c17d426a7b7ebadbb54a"
+    },
+    {
+      "path": "docs/domain.md",
+      "kind": "product-workflow",
+      "size": 2419,
+      "sha256": "54eb1a8580df33aacc077c53da3bea87e3df62557d3d2e82801cf31faf899d69"
+    },
+    {
+      "path": "docs/engineering-principles.md",
+      "kind": "product-workflow",
+      "size": 2718,
+      "sha256": "cf0f8c9b96d62c5579b8ba191bf14ecf1d036f9302eb4787df2a33448f90aff2"
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "kind": "product-workflow",
+      "size": 1772,
+      "sha256": "7255542d73eec7f9d4d32b4403d47850d9f691465e94b9234a171e425ec638dd"
+    },
+    {
+      "path": "docs/product.md",
+      "kind": "product-workflow",
+      "size": 2078,
+      "sha256": "750531689c805a8b263a001d75fee3c2e430f99f70c0ab685d0977ea0565fbe6"
+    },
+    {
+      "path": "docs/specs.md",
+      "kind": "product-workflow",
+      "size": 3157,
+      "sha256": "93ddbac6a44e0d3443c29b3e1dd83b3aae977b9eec61041bc2cf9001c9df79f7"
+    },
+    {
+      "path": "e2e/cancel.spec.ts",
+      "kind": "tests",
+      "size": 2432,
+      "sha256": "74155e18331e4a622acfc6a1404986fa76444d2050afb1bcb12ffa5cba1b0a92"
+    },
+    {
+      "path": "e2e/equipment.spec.ts",
+      "kind": "tests",
+      "size": 2026,
+      "sha256": "f890398676c7608367df2ea2eb4f956a18e305384e952dad24ebeeb76887f276"
+    },
+    {
+      "path": "e2e/reservation.spec.ts",
+      "kind": "tests",
+      "size": 3439,
+      "sha256": "2cdbf1b27b12f05748e404bbc78b3a3966f87f841a396d3df48dea45eadfa4f4"
+    },
+    {
+      "path": "e2e/reservations-list.spec.ts",
+      "kind": "tests",
+      "size": 1751,
+      "sha256": "4c03a4835f8dd010007e9de15b1700ad4a7ee82526e8c23581926c786aea3f3d"
+    },
+    {
+      "path": "e2e/smoke.spec.ts",
+      "kind": "tests",
+      "size": 569,
+      "sha256": "65da0ecc19e55458c4fdc99330a077364d15fe38f51b34875219b12a301ba731"
+    },
+    {
+      "path": "e2e/support/booking.ts",
+      "kind": "tests",
+      "size": 1674,
+      "sha256": "0016792f931412304f2e42fc451d3a1b954d90f298de35e9446b2c3b4e8567d6"
+    },
+    {
+      "path": "package-lock.json",
+      "kind": "other",
+      "size": 47942,
+      "sha256": "ea560c0db40a8c89a7d682a53ab32e158ef16852e8179826f4b7cd41e3a4cdaa"
+    },
+    {
+      "path": "package.json",
+      "kind": "configuration",
+      "size": 458,
+      "sha256": "d8b89faed710f06d019d0a9495ae011d26edfcc840c32753d7e2d763f0e28a00"
+    },
+    {
+      "path": "playwright.config.ts",
+      "kind": "source",
+      "size": 660,
+      "sha256": "3c65bd7ecb0c07e098d114629a80f96a3e72d347345eded21827b9a6c59aceaa"
+    },
+    {
+      "path": "src/app.ts",
+      "kind": "source",
+      "size": 3691,
+      "sha256": "cb1cb36398f17d616919c4694a69bb31605ef5b471ecf18090d7287de17a1e58"
+    },
+    {
+      "path": "src/booking.ts",
+      "kind": "source",
+      "size": 5741,
+      "sha256": "d358613b9ac7569d185affaa5cca9506a8b90db66475279ad741689a9c23db23"
+    },
+    {
+      "path": "src/db.ts",
+      "kind": "source",
+      "size": 1110,
+      "sha256": "86d9d15bc40b861cb2dcc963e53c8b67e837e2b5e5e5490965673f091bdc38a9"
+    },
+    {
+      "path": "src/html.ts",
+      "kind": "source",
+      "size": 841,
+      "sha256": "57cd2c7eec9cc73c9cd9b6edb41fe6c09a0f8eaec819b42e37c1b35b8af86c81"
+    },
+    {
+      "path": "src/server.ts",
+      "kind": "source",
+      "size": 321,
+      "sha256": "c8ff33eb407684a02870e55dd354a6061195c8c89ef8ee76908fefa0cc941a09"
+    },
+    {
+      "path": "src/views.ts",
+      "kind": "source",
+      "size": 6740,
+      "sha256": "77a17b14ede199971e87b7766e22afd6a69ba77b7492543fca6a7683954021cc"
+    },
+    {
+      "path": "tools/validate-workflow.py",
+      "kind": "product-workflow",
+      "size": 19817,
+      "sha256": "52e440a19adcee4ca0b08a39be5a1be0a3b653c66d01e27ce611d32c2661efda"
+    },
+    {
+      "path": "tsconfig.json",
+      "kind": "other",
+      "size": 364,
+      "sha256": "9ab503e499e73e17a90b0992b9c61aa2804158df11e2b9a6ba84c5409008ac90"
     }
   ],
   "categories": {
-    "documentation": 5,
+    "configuration": 1,
+    "documentation": 6,
     "engineering-stack": 20,
-    "other": 6,
-    "product-workflow": 1
+    "other": 10,
+    "product-workflow": 9,
+    "source": 7,
+    "tests": 6
   },
   "directories": {
-    "(root)": 2,
+    "(root)": 8,
     ".agent/core": 19,
     ".agent/learning/guide": 1,
-    ".claude": 1,
+    ".claude": 2,
     ".claude/agents": 4,
     ".codex": 1,
-    ".codex/agents": 4
+    ".codex/agents": 4,
+    ".workflow": 1,
+    "docs": 6,
+    "e2e": 5,
+    "e2e/support": 1,
+    "src": 6,
+    "tools": 1
   },
   "product_workflow": [
     {
       "path": "docs/product.md",
       "producer": "product-discovery",
       "purpose": "Product goals and requirements",
-      "present": false
+      "present": true
     },
     {
       "path": "docs/domain.md",
       "producer": "domain-modeling",
       "purpose": "Domain concepts and business rules",
-      "present": false
+      "present": true
     },
     {
       "path": "docs/specs.md",
       "producer": "journey-specification",
       "purpose": "User journeys and expected behavior",
-      "present": false
+      "present": true
     },
     {
       "path": "docs/architecture.md",
       "producer": "solution-design",
       "purpose": "Approved solution and architecture decisions",
-      "present": false
+      "present": true
     },
     {
       "path": "docs/implementation-plan.md",
       "producer": "implementation-plan",
       "purpose": "Task descriptions and acceptance criteria",
-      "present": false
+      "present": true
     },
     {
       "path": ".workflow/tasks.json",
       "producer": "implementation-plan",
       "purpose": "Task references and dependencies",
-      "present": false
+      "present": true
     },
     {
       "path": "AGENTS.md",
@@ -258,13 +429,13 @@
       "path": "docs/engineering-principles.md",
       "producer": "product-discovery",
       "purpose": "Project-specific engineering principles",
-      "present": false
+      "present": true
     },
     {
       "path": "tools/validate-workflow.py",
       "producer": "product-discovery",
       "purpose": "Product-workflow document validation",
-      "present": false
+      "present": true
     }
   ],
   "engineering_stack": [
@@ -324,5 +495,7 @@
       "present": false
     }
   ],
-  "possible_entrypoints": []
+  "possible_entrypoints": [
+    "src/server.ts"
+  ]
 }
