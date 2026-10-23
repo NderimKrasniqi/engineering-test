@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-04",
+  "risk": "low",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "the list shows active and cancelled reservations with equipment, dates, name and status sorted by start date, filters to one equipment and back, and shows empty states (J-03).",
+      "check_ids": [
+        "typecheck",
+        "e2e"
+      ]
+    }
+  ]
+}

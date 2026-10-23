@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-03",
+  "risk": "high",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "a user reserves equipment and sees it in the reservation list as Active; invalid ranges, past starts, blank names and overlaps with active reservations are refused with a message and kept form values; simultaneous overlapping requests save exactly one (J-02, D-01, D-03, D-04, ADR-01).",
+      "check_ids": [
+        "typecheck",
+        "e2e",
+        "overlap-concurrency",
+        "dependency-audit"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-06",
+  "risk": "high",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "typecheck and the E2E suite for J-01 to J-04 pass, and code and security review have no unresolved findings.",
+      "check_ids": [
+        "typecheck",
+        "e2e",
+        "overlap-concurrency",
+        "dependency-audit"
+      ]
+    }
+  ]
+}

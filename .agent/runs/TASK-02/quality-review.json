@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-02",
+  "verification_run_id": "20261023T152829Z-1792769309095190000-e41b2f8c",
+  "review_method": "agent-self-review",
+  "reviewer_role": null,
+  "reviewer_session_id": null,
+  "implementer_session_id": null,
+  "dimensions": {
+    "readability": {
+      "status": "pass",
+      "rationale": "Domain validation lives in booking.ts with clear messages; app.ts only maps form fields to the domain call and renders; views are plain html templates.",
+      "evidence": [
+        "file:src/booking.ts",
+        "file:src/app.ts",
+        "file:src/views.ts"
+      ]
+    },
+    "maintainability": {
+      "status": "pass",
+      "rationale": "Dependency direction is app -> booking/views; views get a page model and never touch the database. Limits are one shared constant used by validation and form maxlength.",
+      "evidence": [
+        "file:src/booking.ts",
+        "file:src/views.ts",
+        "check:typecheck"
+      ]
+    },
+    "security": {
+      "status": "pass",
+      "rationale": "Host allowlist blocks DNS rebinding; cross-site POSTs are refused by Sec-Fetch-Site or Origin; body size capped at 10kb; urlencoded non-extended parsing plus string-only field() avoids type confusion; SQL is parameterized; user input is escaped in output (duplicate message echoes the name escaped).",
+      "evidence": [
+        "file:src/app.ts",
+        "file:src/html.ts",
+        "check:e2e"
+      ]
+    },
+    "reliability": {
+      "status": "pass",
+      "rationale": "Uniqueness is enforced by the UNIQUE name_key column with ON CONFLICT DO NOTHING, so simultaneous duplicate adds cannot both succeed; failed submissions re-render with values and 422.",
+      "evidence": [
+        "file:src/booking.ts",
+        "file:src/db.ts",
+        "check:e2e"
+      ]
+    },
+    "scalability": {
+      "status": "pass",
+      "rationale": "Equipment list is one indexed-table scan per page view; adequate for a local catalogue. No pagination is in scope (J-03 exclusions).",
+      "evidence": [
+        "file:src/booking.ts"
+      ]
+    },
+    "compatibility": {
+      "status": "pass",
+      "rationale": "Forms work without JavaScript; required/maxlength attributes give browser feedback while the server remains authoritative.",
+      "evidence": [
+        "file:src/views.ts",
+        "check:e2e"
+      ]
+    }
+  },
+  "findings": [],
+  "tradeoffs": "Requests without Origin or Sec-Fetch-Site (non-browser clients such as curl) are allowed, because CSRF needs a browser and browsers send these headers on cross-site POSTs.",
+  "workspace_sha256": "2ef76d0956e354453621846e1dbe49e23b7aaf54e5865217f322f1333dbf31f6",
+  "task_sha256": "23a7fc817b7c06eefa37251212506cae58f8f5a16766279fd43a0b14b05c0c3d",
+  "checks_sha256": "5334af710e9c92d47260d797893024d460cd50d71ecb19d0e1d758e229a2e185",
+  "policy_sha256": "ef20a59ba60e8d7893127a1d7262edcec6f7618d3a4522755d3ef829ceb7d1b5"
+}

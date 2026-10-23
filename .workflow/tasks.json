@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "tasks": {
+    "TASK-01": {"deps": [], "refs": ["ARCH", "ADR-02"]},
+    "TASK-02": {"deps": ["TASK-01"], "refs": ["J-01", "D-02", "ARCH"]},
+    "TASK-03": {"deps": ["TASK-02"], "refs": ["J-02", "D-01", "D-03", "D-04", "D-05", "ADR-01"]},
+    "TASK-04": {"deps": ["TASK-03"], "refs": ["J-03", "D-06"]},
+    "TASK-05": {"deps": ["TASK-03"], "refs": ["J-04", "D-01", "D-06"]},
+    "TASK-06": {"deps": ["TASK-04", "TASK-05"], "refs": ["J-01", "J-02", "J-03", "J-04", "ENG"], "releaseGate": true}
+  }
+}

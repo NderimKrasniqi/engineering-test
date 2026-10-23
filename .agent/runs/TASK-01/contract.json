@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-01",
+  "risk": "low",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "`npm start` serves the booking page on 127.0.0.1, the schema is created in the configured database file, and `npm run typecheck` and a Playwright smoke test pass.",
+      "check_ids": [
+        "typecheck",
+        "e2e"
+      ]
+    }
+  ]
+}

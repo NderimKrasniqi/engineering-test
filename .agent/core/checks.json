@@ -1,4 +1,51 @@
 {
   "schema_version": 1,
-  "checks": []
+  "checks": [
+    {
+      "id": "typecheck",
+      "category": "static",
+      "argv": [
+        "npm",
+        "run",
+        "--silent",
+        "typecheck"
+      ],
+      "timeout_seconds": 120
+    },
+    {
+      "id": "e2e",
+      "category": "e2e",
+      "argv": [
+        "npm",
+        "run",
+        "--silent",
+        "test:e2e"
+      ],
+      "timeout_seconds": 300
+    },
+    {
+      "id": "dependency-audit",
+      "category": "security",
+      "argv": [
+        "npm",
+        "audit",
+        "--audit-level=moderate"
+      ],
+      "timeout_seconds": 120,
+      "min_risk": "high"
+    },
+    {
+      "id": "overlap-concurrency",
+      "category": "edge",
+      "min_risk": "high",
+      "argv": [
+        "npx",
+        "playwright",
+        "test",
+        "--grep",
+        "simultaneous overlapping reservations"
+      ],
+      "timeout_seconds": 180
+    }
+  ]
 }

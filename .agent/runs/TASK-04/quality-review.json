@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-04",
+  "verification_run_id": "20261023T153320Z-1792769600191166000-dbfde5cf",
+  "review_method": "agent-self-review",
+  "reviewer_role": null,
+  "reviewer_session_id": null,
+  "implementer_session_id": null,
+  "dimensions": {
+    "readability": {
+      "status": "pass",
+      "rationale": "Filter is a plain GET form; listReservations takes an optional equipment id; empty-state text names the filtered equipment.",
+      "evidence": [
+        "file:src/views.ts",
+        "file:src/booking.ts"
+      ]
+    },
+    "maintainability": {
+      "status": "pass",
+      "rationale": "Reuses findEquipment for the filter parameter; one query serves filtered and unfiltered lists.",
+      "evidence": [
+        "file:src/booking.ts",
+        "file:src/app.ts",
+        "check:typecheck"
+      ]
+    },
+    "security": {
+      "status": "pass",
+      "rationale": "Query parameter accepted only as a digit string via findEquipment and bound as a SQL parameter; unknown ids fall back to all reservations; output escaped.",
+      "evidence": [
+        "file:src/app.ts",
+        "file:src/booking.ts"
+      ]
+    },
+    "reliability": {
+      "status": "pass",
+      "rationale": "Read-only change; sort is deterministic (start date, end date, id).",
+      "evidence": [
+        "file:src/booking.ts",
+        "check:e2e"
+      ]
+    },
+    "scalability": {
+      "status": "pass",
+      "rationale": "Filtered query uses the equipment_id-leading index; whole-list rendering without paging is in scope for a local app (J-03 excludes paging).",
+      "evidence": [
+        "file:src/db.ts",
+        "file:docs/specs.md"
+      ]
+    },
+    "compatibility": {
+      "status": "pass",
+      "rationale": "Works without JavaScript; filter state is in the URL, so it can be bookmarked.",
+      "evidence": [
+        "file:src/views.ts",
+        "check:e2e"
+      ]
+    }
+  },
+  "findings": [],
+  "tradeoffs": "The unfiltered \"No reservations yet.\" state is not E2E-tested because the E2E database is shared across tests in a run; the filtered empty state exercises the same branch.",
+  "workspace_sha256": "91d468e78be59579d3c0314577f9006aa39069f2fdded6fa37cd3cad4baec524",
+  "task_sha256": "49d9c90b18f29367596e3c6cf2f5afdd543b94b63896c17397a6f39de88aaad5",
+  "checks_sha256": "8b9335573b4a58b803b58031157dd0b2236692f64f0fee122e6f955a6056d9b3",
+  "policy_sha256": "ef20a59ba60e8d7893127a1d7262edcec6f7618d3a4522755d3ef829ceb7d1b5"
+}

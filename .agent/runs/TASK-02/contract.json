@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-02",
+  "risk": "medium",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "a user adds equipment and sees it listed; blank, too-long and duplicate (trimmed, case-insensitive) names are refused with a message (J-01, D-02); a POST from another origin is refused.",
+      "check_ids": [
+        "typecheck",
+        "e2e"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-02",
+  "run_id": "20261023T152829Z-1792769309095190000-e41b2f8c",
+  "passed": true,
+  "workspace_stable": true,
+  "workspace_sha256": "2ef76d0956e354453621846e1dbe49e23b7aaf54e5865217f322f1333dbf31f6",
+  "task_sha256": "23a7fc817b7c06eefa37251212506cae58f8f5a16766279fd43a0b14b05c0c3d",
+  "checks_sha256": "5334af710e9c92d47260d797893024d460cd50d71ecb19d0e1d758e229a2e185",
+  "checks": [
+    {
+      "id": "typecheck",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "duration_seconds": 0.44
+    },
+    {
+      "id": "e2e",
+      "status": "passed",
+      "exit_code": 0,
+      "output_sha256": "3d0b1f4cb22d3f2577f529dbf2b0750836e9b094000944ef50135da5b827f650",
+      "duration_seconds": 2.484
+    }
+  ]
+}

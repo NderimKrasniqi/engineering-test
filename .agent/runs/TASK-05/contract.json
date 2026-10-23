@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-05",
+  "risk": "medium",
+  "claims": [
+    {
+      "id": "acceptance-1",
+      "description": "cancel marks the reservation Cancelled, frees its dates for a new reservation, and is not offered or accepted for cancelled or ended reservations (J-04, D-06).",
+      "check_ids": [
+        "typecheck",
+        "e2e"
+      ]
+    }
+  ]
+}

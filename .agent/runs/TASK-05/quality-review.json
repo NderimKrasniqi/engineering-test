@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "task_id": "TASK-05",
+  "verification_run_id": "20261023T153421Z-1792769661002898000-2b197818",
+  "review_method": "agent-self-review",
+  "reviewer_role": null,
+  "reviewer_session_id": null,
+  "implementer_session_id": null,
+  "dimensions": {
+    "readability": {
+      "status": "pass",
+      "rationale": "isCancellable is one named rule shared by the view (button shown) and mirrored by the conditional UPDATE guard; error branches are explicit.",
+      "evidence": [
+        "file:src/booking.ts",
+        "file:src/views.ts"
+      ]
+    },
+    "maintainability": {
+      "status": "pass",
+      "rationale": "Cancel reuses the Result/conflict pattern and render(); the hidden filter field keeps the user in the same filtered view without session state.",
+      "evidence": [
+        "file:src/app.ts",
+        "check:typecheck"
+      ]
+    },
+    "security": {
+      "status": "pass",
+      "rationale": "Cancel is a POST behind the cross-site guard; route id is validated as digits and bound as a parameter; filter value goes through findEquipment.",
+      "evidence": [
+        "file:src/app.ts",
+        "file:src/booking.ts"
+      ]
+    },
+    "reliability": {
+      "status": "pass",
+      "rationale": "Single conditional UPDATE (status active and end_date >= today) is atomic, so repeated or simultaneous cancels change the row once and later ones get 409; cancelled rows stop blocking because the overlap query filters status=active.",
+      "evidence": [
+        "file:src/booking.ts",
+        "check:e2e"
+      ]
+    },
+    "scalability": {
+      "status": "pass",
+      "rationale": "Primary-key update; no new queries per row.",
+      "evidence": [
+        "file:src/booking.ts"
+      ]
+    },
+    "compatibility": {
+      "status": "pass",
+      "rationale": "Per-row form buttons work without JavaScript; Actions header is visually hidden but available to screen readers.",
+      "evidence": [
+        "file:src/views.ts",
+        "check:e2e"
+      ]
+    }
+  },
+  "findings": [],
+  "tradeoffs": "The ended-reservation test inserts past rows directly into the test database, because D-04 makes that state unreachable through the UI within one test run.",
+  "workspace_sha256": "7484b85858f42020aea7e5c9ced444ab88b1bff91de991858643790cb3d022dd",
+  "task_sha256": "33bc02ab57ceb6bb20f0273515ce12977cb8823bbd2f966fe5977882264cd4aa",
+  "checks_sha256": "8b9335573b4a58b803b58031157dd0b2236692f64f0fee122e6f955a6056d9b3",
+  "policy_sha256": "ef20a59ba60e8d7893127a1d7262edcec6f7618d3a4522755d3ef829ceb7d1b5"
+}
