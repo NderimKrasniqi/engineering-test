@@ -18,8 +18,8 @@
     {
       "path": ".agent/core/DELEGATION.md",
       "kind": "engineering-stack",
-      "size": 5527,
-      "sha256": "3e2fdaf62a9e6e09379f4f1f12aa56d3917064f7982167a920a7d8e2c93b58b7"
+      "size": 5815,
+      "sha256": "7af5e11093d0904e5531f24d224bcee20779008ba3c4e4e389de4855d9cda761"
     },
     {
       "path": ".agent/core/PRODUCT_HANDOFF.md",
@@ -36,8 +36,8 @@
     {
       "path": ".agent/core/QUALITY_STANDARD.md",
       "kind": "engineering-stack",
-      "size": 6527,
-      "sha256": "c2c4851052f0022835d876d969bb088fc6ed503fc9e0bb46150154f633931b39"
+      "size": 9951,
+      "sha256": "0fb921b4500486801beba88b87af87f70fb0f0da25b3db9f7dea22d7f1a7bcb1"
     },
     {
       "path": ".agent/core/TESTING_STYLE.md",
@@ -66,14 +66,14 @@
     {
       "path": ".agent/core/delegation.py",
       "kind": "engineering-stack",
-      "size": 9915,
-      "sha256": "3d228422a51d44637ed8179af3d88dbad944cd3f5952c34425fad040e4651d09"
+      "size": 10053,
+      "sha256": "f06be7900c6eca793e635549d85c3a4e091f898a72a997b189c9f9121393c951"
     },
     {
       "path": ".agent/core/engine.py",
       "kind": "engineering-stack",
-      "size": 30468,
-      "sha256": "776ad6b25a8587c5a1e4c1dc4b5a33bbf0a2006c6647d4931382e61d02143af2"
+      "size": 34831,
+      "sha256": "bf8abe77ad17dfa2c3cc235eefc2e29b253eb7e42c9e3da536db5a8cac787059"
     },
     {
       "path": ".agent/core/instruction_linker.py",
@@ -108,8 +108,8 @@
     {
       "path": ".agent/core/quality_gate.py",
       "kind": "engineering-stack",
-      "size": 12770,
-      "sha256": "0fd4e22235219bc8aac69c7a89a52f3ec4d810126b73a4e348b6a747e720ba07"
+      "size": 20023,
+      "sha256": "d6323623f4dc7bd50f48a47a8de654b8291f64f2c7f3e4a6969589230fcfd5d1"
     },
     {
       "path": ".agent/core/stop_hook.py",
@@ -144,8 +144,8 @@
     {
       "path": ".claude/agents/engineering-reviewer.md",
       "kind": "documentation",
-      "size": 1274,
-      "sha256": "04b98db61be5350b362b62cd3b85a5051eff61f3d85202b1807502814b269e7e"
+      "size": 1412,
+      "sha256": "b4913692dfc0e6ec3ad7308dac3d54ac390dba0ac76d3758fdd17a4c8e9c8b49"
     },
     {
       "path": ".claude/settings.delegation.example.json",
@@ -180,8 +180,8 @@
     {
       "path": ".codex/agents/engineering-reviewer.toml",
       "kind": "other",
-      "size": 1301,
-      "sha256": "74e7a7f48d3113f9d6160c9f04012c3967eeb04c917a960686ebda99a1fa875d"
+      "size": 1439,
+      "sha256": "1e5e0d1cc49fd50149702b86f53d5743356d9f80bf7ec9b43d7a4bc9ade373ec"
     },
     {
       "path": ".codex/config.engineering.example.toml",

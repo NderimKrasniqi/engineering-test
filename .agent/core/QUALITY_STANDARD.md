@@ -46,13 +46,40 @@ After implementation and `engine.py verify`:
 **Review freshness:** `quality_gate.py init` pins the current verified workspace, task,
 check configuration and policy in the draft **before** a reviewer begins. For high-risk
 tasks, send that snapshot to the native independent reviewer; require the reviewer to
-report the same snapshot ID and independent session ID. If the reviewer requests code
+report the same snapshot ID and a session ID if their runtime actually exposes one. If the reviewer requests code
 changes (even small fixes), make them, rerun `engine.py verify`, create a NEW review
 request and ask the independent reviewer to review the final change (a focused patch
 re-review is enough). Never update an old review's run ID or hashes to make it pass.
-`quality_gate.py submit` will not silently rebind old review evidence to a newer run.
-The engine cannot authenticate a native agent's identity or prove what it actually read;
-these IDs are evidence-linked attestations, not cryptographic proof.
+`quality_gate.py submit` rejects an old review whose run ID was changed but whose workspace
+hash still points to the old snapshot. It cannot detect a hand edit that rewrites both, so
+never do this. See `docs/TRUST_MODEL.md` in the Engineering Stack repository.
+When native Claude Code/Codex agents do **not** expose reliable session IDs, do not
+invent them. Leave unavailable IDs as `null` and fill `reviewer_invocation` with the
+actual runtime, tool call, completed status, and a concrete transcript/tool-handle
+reference to the native reviewer invocation. Example (only if observed):
+
+```json
+{
+  "reviewer_role": "engineering-reviewer",
+  "review_method": "independent-agent-review",
+  "reviewer_session_id": null,
+  "implementer_session_id": null,
+  "reviewer_invocation": {
+    "runtime": "claude-code",
+    "tool": "Agent",
+    "invocation_reference": "Claude Code transcript: Agent Independent review of TASK-01 finished",
+    "status": "completed",
+    "session_ids_unavailable": true
+  }
+}
+```
+
+For Codex use `runtime: codex`, `tool: spawn_agent` and its actual observed
+invocation reference. The gate still requires a named independent reviewer,
+verified snapshot and quality evidence, and blocks missing or malformed
+attestations. **An agent-authored invocation reference is not authenticated runtime
+proof.** Report that limitation honestly. If distinct genuine session IDs exist,
+use them instead of the fallback; do not invent IDs or claim cryptographic proof.
 
 ```bash
 python3 .agent/core/quality_gate.py init
@@ -61,6 +88,33 @@ python3 .agent/core/quality_gate.py submit .agent/runs/<task>/quality-draft.json
 python3 .agent/core/engine.py gate
 python3 .agent/core/engine.py finish
 ```
+
+**Review requests (v0.21.0):** `init` creates a single-use review request with a unique
+`review_request_id` in `.agent/runs/<task>/review-request.json` and in the draft. Pass that
+ID and the snapshot ID to the reviewer. `submit` accepts only the current open request for
+the latest verification run and then marks it consumed. A new `init` or a new `verify`
+supersedes an open request. `gate` rejects a review that was written without `submit`,
+edited after submission, or bound to an older request. Reviews and drafts from before
+v0.21.0 (schema 1) must be reinitialized with `init`. Replacing the engineering core during
+an upgrade changes the workspace: run `verify` again, then `init` and a new review. Request records are on an agent-writable filesystem: they catch mistakes and
+shortcuts but are **not** authenticated and cannot stop deliberate forgery.
+
+**Final verification (v0.21.0):** `finish` re-runs every required check of the task before
+it marks the task done. It blocks on a nonzero exit, a timeout, an execution error or a
+workspace change before or during the run. It never changes the accepted review or its
+verification run. It writes one record per verification run,
+`.agent/runs/<task>/final-verification/<run_id>.json`, with status `running` before any
+check starts and `passed` or `failed` after. A `running`, `failed`, unreadable or invalid
+record makes that verification run ineligible: `gate`, `finish`, `quality_gate.py init` and
+`submit` reject it. To recover, fix the cause, run `verify` again, run `init`, obtain a new
+review and `submit` it. The old review never applies to the new run, and the failed record
+stays. A missing record means no attempt was made; deleting a record is tampering and is not
+detected. Completion therefore takes about as long as one more verification, and a flaky
+check can block completion; fix the check, because a retry on the same run is blocked.
+
+**Assurance:** `gate`, `show` and `finish` print `Review assurance: declared`. All reviewer
+evidence methods, for Claude Code and Codex, are self-declared. Open findings of any
+severity are printed; open medium and low findings do not block completion.
 
 Acceptable evidence: `check:<configured-check-id>` or `file:<project-relative-path>`. A file reference means the reviewer inspected it; it does **not** prove absence of defects.
 

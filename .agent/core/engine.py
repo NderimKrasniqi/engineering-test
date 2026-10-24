@@ -18,6 +18,8 @@ SKIP_DIR={'.git','.venv','venv','__pycache__','node_modules','.pytest_cache','.m
 SKIP_FILES={'.agent/core/active.json','.agent/core/clarification.json','.agent/core/continuation.json','.workflow/tasks.json','.agent/learning/events.jsonl','.coverage'}
 SKIP_PREFIXES=('.agent/runs/','.agent/backup/','.agent/learning/records/','.agent/learning/cases/','.agent/learning/proofs/')
 class Problem(Exception): pass
+RECOVERY=(' Fix the cause, rerun verify, run quality_gate.py init and obtain a new independent review;'
+          ' the earlier review cannot be reused')
 
 def encode(v): return json.dumps(v,sort_keys=True,separators=(',',':')).encode()
 def sha(b): return hashlib.sha256(b).hexdigest()
@@ -413,14 +415,8 @@ def append_event(root,event):
     p=root/'.agent/learning/events.jsonl';p.parent.mkdir(parents=True,exist_ok=True)
     with p.open('a',encoding='utf-8') as f:f.write(json.dumps(event,sort_keys=True)+'\n')
 
-def verify(root,args):
-    # Refresh before hashing the repository, never during an evidence gate.
-    refresh_project_map(root)
-    require_clear(root)
-    operation(root)
-    task=contract(root);config,items=checks(root);items=selected_checks(task,items)
-    before,n=snapshot(root); records=[]
-    print('Verifying',task['task_id'],'risk',task['risk'],'files',n,flush=True)
+def run_checks(root,items):
+    records=[]
     for item in items:
         begin=time.monotonic();out=b'';status='error';code=None
         try:
@@ -433,6 +429,67 @@ def verify(root,args):
         except OSError as e:out=str(e).encode();status='error';print('ERROR',item['id'],type(e).__name__,flush=True)
         records.append({'id':item['id'],'status':status,'exit_code':code,'output_sha256':sha(out),
                         'duration_seconds':round(time.monotonic()-begin,3)})
+    return records
+
+def final_record_path(root,task_id,run_id):
+    return locations(root)[3]/task_id/'final-verification'/(run_id+'.json')
+
+def final_verification_blocker(root,task_id,run_id):
+    path=final_record_path(root,task_id,run_id)
+    try:path.lstat()
+    except FileNotFoundError:return None
+    except OSError as e:return f'Final verification record for run {run_id} cannot be inspected ({e}).'+RECOVERY
+    try:record=read(path)
+    except (Problem,RecursionError):return f'Final verification record for run {run_id} is unreadable.'+RECOVERY
+    if (not isinstance(record,dict) or record.get('task_id')!=task_id or record.get('verification_run_id')!=run_id
+            or record.get('status') not in ('running','passed','failed')):
+        return f'Final verification record for run {run_id} is invalid.'+RECOVERY
+    if record['status']=='running':
+        return f'Final verification for run {run_id} did not complete.'+RECOVERY
+    if record['status']=='failed':
+        return f'Final verification for run {run_id} failed: {record.get("reason")}.'+RECOVERY
+    return None
+
+def record_final(path,record):
+    try:write(path,record)
+    except OSError as e:raise Problem(f'Cannot record final verification state: {e}') from e
+
+def final_verification(root,task,items,run):
+    path=final_record_path(root,task['task_id'],run['run_id'])
+    record={'schema_version':1,'task_id':task['task_id'],'verification_run_id':run['run_id'],
+            'workspace_sha256':run['workspace_sha256'],'status':'running','checks':[],
+            'started_at':datetime.now(timezone.utc).isoformat()}
+    record_final(path,record)
+    try:
+        before,_=snapshot(root)
+        record['workspace_before_sha256']=before
+        if before!=run['workspace_sha256']:
+            reason='Workspace changed after verification'
+        else:
+            print('Final verification: re-running',len(items),'required checks for',task['task_id'],flush=True)
+            record['checks']=run_checks(root,items)
+            after,_=snapshot(root)
+            record['workspace_after_sha256']=after
+            failed=[f"{c['id']} ({c['status']})" for c in record['checks'] if c['status']!='passed']
+            if after!=before:reason='Workspace changed during final verification'
+            elif failed:reason='Final verification failed: '+', '.join(failed)
+            else:reason=None
+    except Exception as e:
+        reason=f'Final verification error: {type(e).__name__}: {e}'
+    record.update(status='failed' if reason else 'passed',reason=reason,finished_at=datetime.now(timezone.utc).isoformat())
+    record_final(path,record)
+    if reason:
+        raise Problem(reason+'. Verification run '+run['run_id']+' is no longer eligible for completion.'+RECOVERY)
+
+def verify(root,args):
+    # Refresh before hashing the repository, never during an evidence gate.
+    refresh_project_map(root)
+    require_clear(root)
+    operation(root)
+    task=contract(root);config,items=checks(root);items=selected_checks(task,items)
+    before,n=snapshot(root)
+    print('Verifying',task['task_id'],'risk',task['risk'],'files',n,flush=True)
+    records=run_checks(root,items)
     after,_=snapshot(root);stable=after==before
     if not stable: print('FAIL workspace changed during verification',flush=True)
     success=stable and all(c['status']=='passed' for c in records)
@@ -460,6 +517,22 @@ def verify(root,args):
     print('Evidence:',target.relative_to(root),'result:', 'PASS' if success else 'FAIL',flush=True)
     return 0 if success else 1
 
+def stale_review_note(root):
+    try:
+        active=read(locations(root)[1])
+        task_id=active.get('task_id') if isinstance(active,dict) else None
+        if not isinstance(task_id,str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,79}',task_id):
+            return ''
+        path=root/'.agent/runs'/task_id/'quality-review.json'
+        if not path.is_file():return ''
+        review=read(path)
+        if isinstance(review,dict) and review.get('workspace_sha256')!=snapshot(root)[0]:
+            return (f' The accepted quality review for {task_id} is also stale: it is bound to an older workspace.'
+                    ' After reverification, run quality_gate.py init and obtain a new independent review.')
+    except (Problem,OSError,ValueError,RecursionError):
+        pass
+    return ''
+
 def gate(root):
     from instruction_linker import wire, LinkError
     try: linked,missing=wire(root,check_only=True)
@@ -468,7 +541,7 @@ def gate(root):
     from project_intelligence import refresh, MapError
     try: current,changed=refresh(root,check_only=True)
     except MapError as exc:raise Problem('Project Intelligence: '+str(exc)) from exc
-    if not current:raise Problem('Project Map stale: '+', '.join(changed)+'; refresh map and rerun verification')
+    if not current:raise Problem('Project Map stale: '+', '.join(changed)+'; refresh map and rerun verification.'+stale_review_note(root))
     require_clear(root)
     operation(root)
     task=contract(root);config,items=checks(root);required={c['id'] for c in selected_checks(task,items)}
@@ -477,21 +550,29 @@ def gate(root):
     path=runs[-1];data=read(path)
     if data.get('task_id')!=task['task_id'] or not data.get('passed') or not data.get('workspace_stable'):
         raise Problem('Latest verification failed')
+    if data.get('run_id')!=path.stem:raise Problem('Verification record does not match its run identity')
+    blocker=final_verification_blocker(root,task['task_id'],path.stem)
+    if blocker:raise Problem(blocker)
     if data.get('task_sha256')!=sha(encode(task)):raise Problem('Acceptance contract changed since verification')
     if data.get('checks_sha256')!=sha(encode(config)):raise Problem('Verification configuration changed')
     if {c['id'] for c in data.get('checks',[]) if c.get('status')=='passed'}!=required:
         raise Problem('Missing required passing checks')
-    if snapshot(root)[0]!=data.get('workspace_sha256'):raise Problem('Workspace changed after verification')
+    if snapshot(root)[0]!=data.get('workspace_sha256'):raise Problem('Workspace changed after verification.'+stale_review_note(root))
     from quality_gate import validate_review, QualityProblem
-    try:validate_review(root, task, config, path, data)
+    try:review=validate_review(root, task, config, path, data)
     except QualityProblem as exc:raise Problem('Quality gate: '+str(exc)) from exc
-    return path,data
+    return path,data,review
+
+def print_review_status(review):
+    from quality_gate import status_lines
+    for line in status_lines(review):print(line)
 
 def check_gate(root,_):
-    path,data=gate(root);print('PASS gate',data['task_id'],path.relative_to(root));return 0
+    path,data,review=gate(root);print('PASS gate',data['task_id'],path.relative_to(root))
+    print_review_status(review);return 0
 
 def finish(root,_):
-    path,data=gate(root)
+    path,data,review=gate(root)
     state=maintenance_report(root)
     if not state['healthy']:raise Problem('Self-maintenance requires repair: '+'; '.join(state['issues']))
     persist_maintenance_report(root,state)
@@ -500,6 +581,8 @@ def finish(root,_):
     from learning_engine import unresolved_for_task
     pending=unresolved_for_task(root,data['task_id'])
     if pending:raise Problem('Unresolved learning candidates: '+', '.join(pending)+'. Diagnose and prove a guard, or defer with reason.')
+    task=contract(root)
+    final_verification(root,task,selected_checks(task,checks(root)[1]),data)
     write(locations(root)[3]/data['task_id']/'contract.json',contract(root))
     if isinstance(doc.get('tasks'),dict):
         # Canonical product-workflow: completion status lives only in the plan.
@@ -522,6 +605,7 @@ def finish(root,_):
         write(locations(root)[2],doc)
     locations(root)[1].unlink()
     print('DONE',data['task_id'],'with evidence',path.relative_to(root))
+    print_review_status(review)
     remaining=ready(tasks(root)[1])
     if remaining and operation(root)['continuation_mode']=='after_each_task':
         write(continuation_path(root),{'schema_version':1,'awaiting_user':True,

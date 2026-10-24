@@ -10,11 +10,16 @@ import argparse
 import json
 import re
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 DIMENSIONS = ("readability", "maintainability", "security", "reliability", "scalability", "compatibility")
 CATEGORIES = ("e2e", "edge", "test", "static", "security", "build", "integration", "performance", "other")
 RUN_ID = re.compile(r"^\d{8}T\d{6}Z-\d+-[0-9a-f]{8}$")
+REQUEST_ID = re.compile(r"^[0-9a-f]{32}$")
+REVIEW_SCHEMA = 2
+ASSURANCE = 'declared (local evidence checked for consistency; not authenticated)'
 
 class QualityProblem(Exception):
     pass
@@ -42,7 +47,74 @@ def review_path(root, task_id):
     return root / '.agent/runs' / task_id / 'quality-review.json'
 
 
-def quality_template(task, run, checks_config, policy):
+def request_path(root, task_id):
+    return root / '.agent/runs' / task_id / 'review-request.json'
+
+
+def new_request(root, task, run):
+    from engine import read, write, Problem
+    path = request_path(root, task['task_id'])
+    previous = None
+    if path.is_file():
+        try:
+            prior = read(path)
+        except (Problem, RecursionError):
+            prior = None
+        if isinstance(prior, dict) and prior.get('status') in ('open', 'consumed'):
+            previous = (prior['status'], prior.get('request_id'))
+    request = {
+        'schema_version': 1,
+        'request_id': uuid.uuid4().hex,
+        'task_id': task['task_id'],
+        'verification_run_id': run['run_id'],
+        'workspace_sha256': run['workspace_sha256'],
+        'status': 'open',
+        'created_at': datetime.now(timezone.utc).isoformat(),
+    }
+    write(path, request)
+    return request, previous
+
+
+def checked_request(root, task, run, request_id, status):
+    from engine import read, Problem
+    if not isinstance(request_id, str) or not REQUEST_ID.fullmatch(request_id):
+        raise QualityProblem('Review has no valid review_request_id. Run quality_gate.py init and review the new draft; '
+                             'drafts and reviews created before v0.21.0 must be reinitialized')
+    path = request_path(root, task['task_id'])
+    if not path.is_file():
+        raise QualityProblem('No review request exists for this task; run quality_gate.py init')
+    try:
+        request = read(path)
+    except (Problem, RecursionError) as exc:
+        raise QualityProblem('Review request record is unreadable; run quality_gate.py init') from exc
+    if (not isinstance(request, dict) or request.get('schema_version') != 1
+            or not isinstance(request.get('request_id'), str) or not REQUEST_ID.fullmatch(request['request_id'])
+            or request.get('status') not in ('open', 'consumed') or request.get('task_id') != task['task_id']):
+        raise QualityProblem('Review request record is invalid; run quality_gate.py init')
+    if request['request_id'] != request_id:
+        raise QualityProblem(f'Review request {request_id} was superseded or is unknown; '
+                             f'the current request is {request["request_id"]}. Review and submit the current draft')
+    if request.get('verification_run_id') != run['run_id'] or request.get('workspace_sha256') != run['workspace_sha256']:
+        raise QualityProblem(f'Review request {request_id} belongs to an older verification run; '
+                             'run quality_gate.py init after the latest verify and obtain a new review')
+    if request['status'] != status:
+        if request['status'] == 'consumed':
+            raise QualityProblem(f'Review request {request_id} was already consumed by an accepted review; '
+                                 'run quality_gate.py init for a new review')
+        raise QualityProblem(f'Review request {request_id} has not been submitted; '
+                             'submit the review with quality_gate.py submit instead of writing quality-review.json')
+    return path, request
+
+
+def status_lines(review):
+    lines = ['Review assurance: ' + ASSURANCE]
+    for finding in review.get('findings', []):
+        if finding.get('status') == 'open':
+            lines.append(f"Open {finding['severity']} finding: {' '.join(finding['summary'].split())}")
+    return lines
+
+
+def quality_template(task, run, checks_config, policy, request_id=None):
     """Bind a review request to the verified state BEFORE a reviewer starts.
 
     These fields are fixed when `init` runs. `submit` must never rebase an
@@ -50,7 +122,8 @@ def quality_template(task, run, checks_config, policy):
     """
     from engine import encode, sha
     return {
-        'schema_version': 1,
+        'schema_version': REVIEW_SCHEMA,
+        'review_request_id': request_id,
         'task_id': task['task_id'],
         'verification_run_id': run['run_id'],
         'workspace_sha256': run['workspace_sha256'],
@@ -61,6 +134,7 @@ def quality_template(task, run, checks_config, policy):
         'reviewer_role': None,
         'reviewer_session_id': None,
         'implementer_session_id': None,
+        'reviewer_invocation': None,  # Native tool attestation when session IDs are unavailable.
         'dimensions': {
             name: {'status': 'pending', 'rationale': '', 'evidence': []}
             for name in DIMENSIONS
@@ -71,7 +145,7 @@ def quality_template(task, run, checks_config, policy):
 
 
 def verification_record(root, task):
-    from engine import read
+    from engine import read, final_verification_blocker
     directory = root / '.agent/runs' / task['task_id']
     candidates = sorted(p for p in directory.glob('*.json') if RUN_ID.fullmatch(p.stem)) if directory.exists() else []
     if not candidates:
@@ -80,10 +154,15 @@ def verification_record(root, task):
     data = read(path)
     if not data.get('passed'):
         raise QualityProblem('Latest verification run did not pass')
+    if data.get('run_id') != path.stem:
+        raise QualityProblem('Verification record does not match its run identity')
+    blocker = final_verification_blocker(root, task['task_id'], path.stem)
+    if blocker:
+        raise QualityProblem(blocker)
     return path, data
 
 
-def validate_review(root, task, checks_config, run_path, run):
+def validate_review(root, task, checks_config, run_path, run, submitting=False):
     from engine import read, encode, sha, snapshot
     policy = quality_policy(root)
     category_by_id = {c['id']:c.get('category','other') for c in checks_config['checks']}
@@ -98,7 +177,10 @@ def validate_review(root, task, checks_config, run_path, run):
     if not rp.exists():
         raise QualityProblem('Missing engineering review. Generate with quality_gate.py init and submit after verification')
     review = read(rp)
-    if not isinstance(review,dict) or review.get('schema_version')!=1:
+    if isinstance(review,dict) and review.get('schema_version')==1:
+        raise QualityProblem('Review uses schema 1 from before v0.21.0. Run quality_gate.py init for the latest '
+                             'verification run and submit the review through the new request; do not edit the old file')
+    if not isinstance(review,dict) or review.get('schema_version')!=REVIEW_SCHEMA:
         raise QualityProblem('Review schema invalid')
     if review.get('task_id')!=task['task_id'] or review.get('verification_run_id')!=run['run_id']:
         raise QualityProblem('Review does not reference the latest verification run')
@@ -119,13 +201,31 @@ def validate_review(root, task, checks_config, run_path, run):
     if task['risk']=='high' and settings['require_independent_review_for_high_risk'] and method!='independent-agent-review':
         raise QualityProblem('High-risk task requires a separate independent reviewer attestation')
     if method=='independent-agent-review':
-        reviewer=review.get('reviewer_session_id')
-        implementer=review.get('implementer_session_id')
-        if (review.get('reviewer_role')!='engineering-reviewer'
-                or not isinstance(reviewer,str) or len(reviewer.strip())<8
-                or not isinstance(implementer,str) or len(implementer.strip())<8
-                or reviewer==implementer):
-            raise QualityProblem('Independent review needs a named reviewer role and distinct nonempty session IDs')
+        if review.get('reviewer_role') != 'engineering-reviewer':
+            raise QualityProblem('Independent review requires the engineering-reviewer role')
+        reviewer = review.get('reviewer_session_id')
+        implementer = review.get('implementer_session_id')
+        for label, value in (('reviewer_session_id', reviewer), ('implementer_session_id', implementer)):
+            if value is not None and (not isinstance(value, str) or len(value.strip()) < 8):
+                raise QualityProblem(f'{label} must be an actual nonempty session ID or null')
+        if reviewer is not None and implementer is not None and reviewer == implementer:
+            raise QualityProblem('Reviewer and implementer session IDs must be distinct')
+        if reviewer is None or implementer is None:
+            # Claude/Codex may expose a native agent invocation but no session ID.
+            # This remains an agent-reported attestation, not authenticated identity.
+            invocation = review.get('reviewer_invocation')
+            if not isinstance(invocation, dict) or set(invocation) != {
+                    'runtime', 'tool', 'invocation_reference', 'status', 'session_ids_unavailable'}:
+                raise QualityProblem('Missing native reviewer invocation attestation for unavailable session IDs')
+            expected_tool = {'claude-code': 'Agent', 'codex': 'spawn_agent'}
+            runtime = invocation.get('runtime')
+            if (not isinstance(runtime, str) or runtime not in expected_tool
+                    or invocation.get('tool') != expected_tool[runtime]
+                    or invocation.get('status') != 'completed'
+                    or invocation.get('session_ids_unavailable') is not True
+                    or not isinstance(invocation.get('invocation_reference'), str)
+                    or len(invocation['invocation_reference'].strip()) < 20):
+                raise QualityProblem('Invalid native reviewer invocation attestation; record the actual tool call and result')
     dims=review.get('dimensions')
     if not isinstance(dims,dict) or set(dims)!=set(DIMENSIONS):
         raise QualityProblem('Review must assess exactly all quality dimensions')
@@ -162,6 +262,13 @@ def validate_review(root, task, checks_config, run_path, run):
             raise QualityProblem('Unresolved high/critical code quality or security finding')
         if finding['status']=='resolved' and not finding.get('resolution'):
             raise QualityProblem('Resolved finding requires explanation')
+    if submitting:
+        return review
+    _, request = checked_request(root, task, run, review.get('review_request_id'), 'consumed')
+    if request.get('review_sha256') != sha(encode(review)):
+        raise QualityProblem('Accepted review differs from the review submitted for request '
+                             f'{request["request_id"]}; it was edited after submission or written without submit. '
+                             'Run quality_gate.py init and submit a new review')
     return review
 
 
@@ -181,7 +288,13 @@ def main(argv=None):
             if snapshot(root)[0] != run['workspace_sha256']:
                 raise QualityProblem('Workspace changed after verification; rerun verify before requesting review')
             draft=review_path(root,task['task_id']).with_name('quality-draft.json')
-            write(draft,quality_template(task,run,config,quality_policy(root)))
+            request,previous=new_request(root,task,run)
+            write(draft,quality_template(task,run,config,quality_policy(root),request['request_id']))
+            if previous and previous[0]=='open':
+                print('Superseded open review request:',previous[1])
+            elif previous:
+                print('Replaced consumed review request',previous[1],'- its accepted review no longer passes the gate')
+            print('Review request ID:',request['request_id'])
             print('Review request pinned to verified workspace:',run['workspace_sha256'])
             print('For high risk, send this snapshot ID to an independent reviewer BEFORE they inspect the code.')
             print('If reviewed code changes, rerun verify, init and independent review; do not reuse earlier findings.')
@@ -202,6 +315,7 @@ def main(argv=None):
                 raise QualityProblem('Review was prepared for a different workspace, task or policy. Reverify, reinitialize and review the final code again; never rebind old review evidence')
             if snapshot(root)[0] != run['workspace_sha256']:
                 raise QualityProblem('Workspace changed since review request; rerun verification and review')
+            request_file,request=checked_request(root,task,run,data.get('review_request_id'),'open')
             target=review_path(root,task['task_id'])
             # Validate candidate before writing it as the accepted review.
             temporary=target.with_name('quality-candidate.json')
@@ -210,16 +324,21 @@ def main(argv=None):
                 # validation reads review_path; replace temporarily but restore prior review on failure
                 prior=target.read_bytes() if target.exists() else None
                 write(target,data)
-                try:validate_review(root,task,config,run_path,run)
+                try:
+                    validate_review(root,task,config,run_path,run,submitting=True)
+                    write(request_file,{**request,'status':'consumed','review_sha256':sha(encode(data)),
+                                        'consumed_at':datetime.now(timezone.utc).isoformat()})
                 except Exception:
                     if prior is None:target.unlink(missing_ok=True)
                     else:target.write_bytes(prior)
                     raise
             finally:temporary.unlink(missing_ok=True)
             print('Engineering quality review recorded:',target.relative_to(root))
+            for line in status_lines(data):print(line)
         elif args.action=='show':
             validated=validate_review(root,task,config,run_path,run)
             print('PASS review',validated['task_id'],'based on',validated['review_method'])
+            for line in status_lines(validated):print(line)
     except (QualityProblem, OSError, ValueError) as exc:
         print('BLOCKED:',exc,file=sys.stderr)
         return 2
